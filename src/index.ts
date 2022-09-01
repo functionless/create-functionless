@@ -32,7 +32,9 @@ async function askProjectName() {
     initial: defaultName,
     validate: (name) => {
       const result = validateProjectName(name);
-      if (result.validForNewPackages) return true;
+      if (result.validForNewPackages) {
+        return true;
+      }
       return `Invalid project name: ${name}`;
     },
   });
@@ -95,11 +97,13 @@ async function run() {
     await fs.promises.writeFile(destinationPath, templateContent);
   };
 
-  for (const path of templateManifest) {
-    await renderTemplate(path, {
-      projectName,
-    });
-  }
+  const templateData = {
+    projectName,
+  };
+
+  await Promise.all(
+    templateManifest.map((path) => renderTemplate(path, templateData))
+  );
 
   process.chdir(root);
 
