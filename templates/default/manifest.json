@@ -1,0 +1,8 @@
+[
+  "package.json",
+  "cdk.json",
+  "tsconfig.json",
+  ".swcrc",
+  ".gitignore.template",
+  "src/app.ts"
+]
