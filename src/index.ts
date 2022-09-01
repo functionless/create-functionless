@@ -35,6 +35,13 @@ async function askProjectName() {
   return defaultName;
 }
 
+function failOnError(response: ReturnType<typeof spawn.sync>, message: string) {
+  if (response.status !== 0) {
+    console.error(chalk.red(message));
+    process.exit(1);
+  }
+}
+
 async function run() {
   const templateName = "default";
   const templateRoot = path.join(__dirname, "..", "templates", templateName);
@@ -68,8 +75,12 @@ async function run() {
       await fs.promises.readFile(templateFilePath, "utf-8"),
       data
     );
+    // Npm won't include `.gitignore` files in a package.
+    // This allows you to add .template as a file ending
+    // and it will be removed when rendered in the end
+    // project.
     const destinationPath = path.join(root, localPath.replace(".template", ""));
-    fs.promises.mkdir(path.dirname(destinationPath), {
+    await fs.promises.mkdir(path.dirname(destinationPath), {
       recursive: true,
     });
     await fs.promises.writeFile(destinationPath, templateContent);
@@ -101,29 +112,45 @@ async function run() {
     "esbuild",
   ];
 
-  spawn.sync("yarn", ["add", "-D", ...dependencies], {
-    stdio: "inherit",
-  });
+  failOnError(
+    spawn.sync("yarn", ["add", "-D", ...dependencies], {
+      stdio: "inherit",
+    }),
+    "Unable to install dependencies"
+  );
 
   console.log();
   console.log("Initializing git repository...");
   console.log();
 
-  spawn.sync("git", ["init", "-q", "-b", "main"], {
-    stdio: "inherit",
-  });
+  const gitErrorMessage = "Error initializing git repository.";
 
-  spawn.sync("git", ["add", "."], {
-    stdio: "inherit",
-  });
+  failOnError(
+    spawn.sync("git", ["init", "-q"], {
+      stdio: "inherit",
+    }),
+    gitErrorMessage
+  );
 
-  spawn.sync("git", ["commit", "-q", "-m", "initial commit"], {
-    stdio: "inherit",
-  });
+  failOnError(
+    spawn.sync("git", ["add", "."], {
+      stdio: "inherit",
+    }),
+    gitErrorMessage
+  );
+
+  failOnError(
+    spawn.sync("git", ["commit", "-q", "-m", "initial commit"], {
+      stdio: "inherit",
+    }),
+    gitErrorMessage
+  );
 
   console.log(chalk.green("Project ready!"));
   console.log();
   console.log(`Run ${chalk.yellow(`cd ./${projectName}`)} to get started.`);
+
+  process.exit(0);
 }
 
 run();

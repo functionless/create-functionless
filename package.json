@@ -9,7 +9,8 @@
   "scripts": {
     "dev": "ncc build ./src/index.ts -w -o dist/",
     "prerelease": "rimraf ./dist/",
-    "release": "ncc build ./src/index.ts -o dist/ --minify --no-cache --no-source-map-register"
+    "release": "ncc build ./src/index.ts -o dist/ --minify --no-cache --no-source-map-register",
+    "prepublishOnly": "npm run release"
   },
   "keywords": [
     "functionless"
