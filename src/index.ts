@@ -9,6 +9,15 @@ import prompts from "prompts";
 import validateProjectName from "validate-npm-package-name";
 import packageJson from "../package.json";
 
+const packageManager = process.env.npm_config_user_agent;
+
+if (!packageManager?.startsWith("yarn")) {
+  console.error(chalk.red("Only yarn is supported currently."));
+  console.log(`Have you installed yarn? ${chalk.yellow("npm i -g yarn")}`);
+  console.log(`If so, run ${chalk.yellow("yarn create functionless")}`);
+  process.exit(1);
+}
+
 const program = new Command();
 
 program.name(packageJson.name).version(packageJson.version).parse(process.argv);
