@@ -10,9 +10,10 @@ const sayFunction = new Function(
   "SayFunction",
   async (event: { message: string }) => {
     console.log(event.message);
+    return;
   }
 );
 
 new StepFunction(stack, "Workflow", async (event: { name: string }) => {
-  sayFunction({ message: `Hello ${event.name}` });
+  await sayFunction({ message: `Hello ${event.name}` });
 });
