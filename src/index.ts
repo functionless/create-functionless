@@ -22,6 +22,11 @@ const program = new Command();
 
 program.name(packageJson.name).version(packageJson.version).parse(process.argv);
 
+run().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
+
 async function askProjectName() {
   const defaultName = "new-project";
 
@@ -112,17 +117,17 @@ async function run() {
   console.log();
 
   const dependencies = [
-    "typescript",
-    "functionless",
+    "@aws-cdk/aws-appsync-alpha",
     "@functionless/ast-reflection",
     "@functionless/language-service",
-    "aws-sdk",
-    "typesafe-dynamodb",
     "aws-cdk",
     "aws-cdk-lib",
-    "@aws-cdk/aws-appsync-alpha",
+    "aws-sdk",
     "constructs",
     "esbuild",
+    "functionless",
+    "typesafe-dynamodb",
+    "typescript",
   ];
 
   failOnError(
@@ -165,5 +170,3 @@ async function run() {
 
   process.exit(0);
 }
-
-run();
