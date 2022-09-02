@@ -1,0 +1,11 @@
+{
+  "name": "{{projectName}}",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "deploy": "cdk deploy",
+    "synth": "cdk synth",
+    "validate": "functionless"
+  },
+  "devDependencies": {}
+}

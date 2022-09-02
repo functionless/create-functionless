@@ -1,0 +1,3 @@
+{
+  "app": "node -r '@swc/register' ./src/app.ts"
+}

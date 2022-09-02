@@ -1,0 +1,52 @@
+{
+  "name": "create-functionless",
+  "version": "0.1.0",
+  "description": "Create a Functionless CDK app.",
+  "files": [
+    "dist",
+    "templates/**/*"
+  ],
+  "bin": {
+    "create-functionless": "./dist/index.js"
+  },
+  "scripts": {
+    "test:npm": "./bin/test-npm.sh",
+    "test:yarn": "./bin/test-yarn.sh",
+    "prerelease": "rimraf ./dist/",
+    "release": "esbuild --bundle src/index.ts --outfile=dist/index.js --platform=node",
+    "prepublishOnly": "npm run release"
+  },
+  "keywords": [
+    "functionless"
+  ],
+  "author": "Functionless",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.2",
+    "@types/mustache": "^4.2.1",
+    "@types/node": "^18.7.14",
+    "@types/prompts": "^2.0.14",
+    "@types/validate-npm-package-name": "^4.0.0",
+    "aws-cdk-lib": "^2.40.0",
+    "chalk": "^5.0.1",
+    "commander": "^9.4.0",
+    "cross-spawn": "^7.0.3",
+    "esbuild": "^0.15.6",
+    "functionless": "^0.22.6",
+    "mustache": "^4.2.0",
+    "prompts": "^2.4.2",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^19.0.5",
+    "typescript": "^4.8.2",
+    "validate-npm-package-name": "^4.0.0"
+  },
+  "release": {
+    "branches": [
+      "main",
+      {
+        "name": "dev",
+        "prerelease": true
+      }
+    ]
+  }
+}
