@@ -5,60 +5,38 @@ import spawn from "cross-spawn";
 import fs from "fs";
 import mustache from "mustache";
 import path from "path";
-import prompts from "prompts";
-import validateProjectName from "validate-npm-package-name";
+
 import packageJson from "../package.json";
-
-const packageManager = process.env.npm_config_user_agent;
-
-if (!packageManager?.startsWith("yarn")) {
-  console.error(chalk.red("Only yarn is supported currently."));
-  console.log(`Have you installed yarn? ${chalk.yellow("npm i -g yarn")}`);
-  console.log(`If so, run ${chalk.yellow("yarn create functionless")}`);
-  process.exit(1);
-}
+import {
+  askProjectName,
+  failOnError,
+  getPackageManager,
+  installPackages,
+} from "./util";
 
 const program = new Command();
 
-program.name(packageJson.name).version(packageJson.version).parse(process.argv);
+let projectName: string | undefined;
+
+program
+  .name(packageJson.name)
+  .version(packageJson.version)
+  .arguments("[projectName]")
+  .action((name) => {
+    if (typeof name === "string") {
+      projectName = name;
+    }
+  })
+  .parse(process.argv);
 
 run().catch((err) => {
   console.error(err);
   process.exit(1);
 });
 
-async function askProjectName() {
-  const defaultName = "new-project";
-
-  const answer = await prompts({
-    type: "text",
-    name: "projectName",
-    message: "Project name:",
-    initial: defaultName,
-    validate: (name) => {
-      const result = validateProjectName(name);
-      if (result.validForNewPackages) {
-        return true;
-      }
-      return `Invalid project name: ${name}`;
-    },
-  });
-
-  if (typeof answer.projectName === "string") {
-    return answer.projectName.trim();
-  }
-
-  return defaultName;
-}
-
-function failOnError(response: ReturnType<typeof spawn.sync>, message: string) {
-  if (response.status !== 0) {
-    console.error(chalk.red(message));
-    process.exit(1);
-  }
-}
-
 async function run() {
+  const packageMangager = getPackageManager();
+
   const templateName = "default";
   const templateRoot = path.join(__dirname, "..", "templates", templateName);
   const templateManifestPath = path.join(templateRoot, "manifest.json");
@@ -66,7 +44,9 @@ async function run() {
     await fs.promises.readFile(templateManifestPath, "utf-8")
   );
 
-  const projectName = await askProjectName();
+  if (!projectName) {
+    projectName = await askProjectName();
+  }
 
   console.log();
   console.log(`Creating ${chalk.green(projectName)}...`);
@@ -130,12 +110,7 @@ async function run() {
     "typescript",
   ];
 
-  failOnError(
-    spawn.sync("yarn", ["add", "-D", ...dependencies], {
-      stdio: "inherit",
-    }),
-    "Unable to install dependencies"
-  );
+  installPackages(packageMangager, dependencies);
 
   console.log();
   console.log("Initializing git repository...");

@@ -10,9 +10,9 @@
     "create-functionless": "./dist/index.js"
   },
   "scripts": {
-    "dev": "ncc build ./src/index.ts -w -o dist/",
+    "test:yarn": "./bin/test-yarn.sh",
     "prerelease": "rimraf ./dist/",
-    "release": "ncc build ./src/index.ts -o dist/ --minify --no-cache --no-source-map-register",
+    "release": "esbuild --bundle src/index.ts --outfile=dist/index.js --platform=node",
     "prepublishOnly": "npm run release"
   },
   "keywords": [
@@ -26,11 +26,11 @@
     "@types/node": "^18.7.14",
     "@types/prompts": "^2.0.14",
     "@types/validate-npm-package-name": "^4.0.0",
-    "@vercel/ncc": "^0.34.0",
     "aws-cdk-lib": "^2.40.0",
     "chalk": "^5.0.1",
     "commander": "^9.4.0",
     "cross-spawn": "^7.0.3",
+    "esbuild": "^0.15.6",
     "functionless": "^0.22.6",
     "mustache": "^4.2.0",
     "prompts": "^2.4.2",
