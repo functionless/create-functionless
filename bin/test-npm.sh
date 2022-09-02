@@ -14,18 +14,16 @@ function cleanup() {
 
 trap cleanup EXIT
 
-# Clean up installs of create-functionless if they exist
-yarn cache clean
-
-yarn run release
-yarn pack -f ${PACKED_NAME}
-yarn global add --skip-integrity-check --offline "file:$(pwd)/${PACKED_NAME}"
+npm run release
+npm pack
+mv ${PACKAGE_NAME}*.tgz ${PACKED_NAME}
+npm i -g ${PACKED_NAME}
 
 # Use the create script to create a new project
-yarn create --offline functionless ${TEST_PROJECT}
+create-functionless ${TEST_PROJECT}
 cd ${TEST_PROJECT}
 
 # Verify new project can synth
-yarn synth
+npm run synth
 
 cd ..

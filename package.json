@@ -10,6 +10,7 @@
     "create-functionless": "./dist/index.js"
   },
   "scripts": {
+    "test:npm": "./bin/test-npm.sh",
     "test:yarn": "./bin/test-yarn.sh",
     "prerelease": "rimraf ./dist/",
     "release": "esbuild --bundle src/index.ts --outfile=dist/index.js --platform=node",
