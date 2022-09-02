@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 set -ue pipefail
 
@@ -6,7 +6,7 @@ PACKAGE_NAME="create-functionless"
 PACKED_NAME="${PACKAGE_NAME}.tgz"
 TEST_PROJECT="test-project"
 
-function cleanup {
+function cleanup() {
   yarn global remove create-functionless || true
   rm -fr ${PACKED_NAME} || true
   rm -fr ${TEST_PROJECT} || true
