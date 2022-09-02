@@ -21,6 +21,9 @@ yarn run release
 yarn pack -f ${PACKED_NAME}
 yarn global add --skip-integrity-check --offline "file:$(pwd)/${PACKED_NAME}"
 
+git config --global user.email "test@test.com"
+git config --global user.name "CI Test"
+
 # Use the create script to create a new project
 yarn create --offline functionless ${TEST_PROJECT}
 cd ${TEST_PROJECT}
