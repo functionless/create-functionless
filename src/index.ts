@@ -100,6 +100,7 @@ async function run() {
     "@aws-cdk/aws-appsync-alpha",
     "@functionless/ast-reflection",
     "@functionless/language-service",
+    "@types/node",
     "aws-cdk",
     "aws-cdk-lib",
     "aws-sdk",
