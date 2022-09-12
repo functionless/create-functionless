@@ -5,7 +5,16 @@
   "scripts": {
     "deploy": "cdk deploy",
     "synth": "cdk synth",
+    "test": "jest",
     "validate": "functionless"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "jest": {
+    "transform": {
+      "^.+\\.(t|j)sx?$": [
+        "functionless/jest",
+        {}
+      ]
+    }
+  }
 }

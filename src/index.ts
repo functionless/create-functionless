@@ -100,6 +100,7 @@ async function run() {
     "@aws-cdk/aws-appsync-alpha",
     "@functionless/ast-reflection",
     "@functionless/language-service",
+    "@types/jest",
     "@types/node",
     "aws-cdk",
     "aws-cdk-lib",
@@ -107,6 +108,7 @@ async function run() {
     "constructs",
     "esbuild",
     "functionless",
+    "jest",
     "typesafe-dynamodb",
     "typescript",
   ];
