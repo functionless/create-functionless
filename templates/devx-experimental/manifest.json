@@ -1,0 +1,5 @@
+{
+  "extend": "base",
+  "devDependencies": ["fl-exp"],
+  "files": ["cdk.json", "src/my-stack/_stack.ts"]
+}

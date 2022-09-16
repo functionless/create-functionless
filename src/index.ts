@@ -7,6 +7,7 @@ import mustache from "mustache";
 import path from "path";
 
 import packageJson from "../package.json";
+import { loadTemplatePlan } from "./plan";
 import {
   askProjectName,
   failOnError,
@@ -17,14 +18,22 @@ import {
 const program = new Command();
 
 let projectName: string | undefined;
+let templateName = "default";
 
 program
   .name(packageJson.name)
   .version(packageJson.version)
   .arguments("[projectName]")
-  .action((name) => {
+  .option(
+    "-t --template [templateName]",
+    "name of the template to use [default]"
+  )
+  .action((name, options) => {
     if (typeof name === "string") {
       projectName = name;
+    }
+    if (typeof options.template === "string") {
+      templateName = options.template;
     }
   })
   .parse(process.argv);
@@ -37,12 +46,7 @@ run().catch((err) => {
 async function run() {
   const packageMangager = getPackageManager();
 
-  const templateName = "default";
-  const templateRoot = path.join(__dirname, "..", "templates", templateName);
-  const templateManifestPath = path.join(templateRoot, "manifest.json");
-  const templateManifest: string[] = JSON.parse(
-    await fs.promises.readFile(templateManifestPath, "utf-8")
-  );
+  const templatePlan = await loadTemplatePlan(templateName);
 
   if (!projectName) {
     projectName = await askProjectName();
@@ -63,12 +67,12 @@ async function run() {
   }
 
   const renderTemplate = async (
+    sourcePath: string,
     localPath: string,
     data: Record<string, unknown>
   ) => {
-    const templateFilePath = path.join(templateRoot, localPath);
     const templateContent = mustache.render(
-      await fs.promises.readFile(templateFilePath, "utf-8"),
+      await fs.promises.readFile(sourcePath, "utf-8"),
       data
     );
     // Npm won't include `.gitignore` files in a package.
@@ -86,9 +90,11 @@ async function run() {
     projectName,
   };
 
-  await Promise.all(
-    templateManifest.map((path) => renderTemplate(path, templateData))
-  );
+  for (const mapping of templatePlan.fileMappings) {
+    // Sequential because order of file rendering matters
+    // for templates that extend other templates.
+    await renderTemplate(mapping.sourcePath, mapping.localPath, templateData);
+  }
 
   process.chdir(root);
 
@@ -96,24 +102,7 @@ async function run() {
   console.log("Installing packages...");
   console.log();
 
-  const dependencies = [
-    "@aws-cdk/aws-appsync-alpha",
-    "@functionless/ast-reflection",
-    "@functionless/language-service",
-    "@types/jest",
-    "@types/node",
-    "aws-cdk",
-    "aws-cdk-lib",
-    "aws-sdk",
-    "constructs",
-    "esbuild",
-    "functionless",
-    "jest",
-    "typesafe-dynamodb",
-    "typescript",
-  ];
-
-  installPackages(packageMangager, dependencies);
+  installPackages(packageMangager, templatePlan.devDependencies);
 
   console.log();
   console.log("Initializing git repository...");

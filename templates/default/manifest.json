@@ -1,7 +1,6 @@
-[
-  "package.json",
-  "cdk.json",
-  "tsconfig.json",
-  ".gitignore.template",
-  "src/app.ts"
-]
+{
+  "extend": "base",
+  "files": [
+    "src/app.ts"
+  ]
+}
