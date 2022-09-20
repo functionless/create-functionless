@@ -1,5 +1,12 @@
 {
   "extend": "base",
-  "devDependencies": ["fl-exp"],
-  "files": ["cdk.json", "src/my-stack/_stack.ts"]
+  "devDependencies": ["@types/uuid", "fl-exp", "uuid"],
+  "files": [
+    "cdk.json",
+    "src/my-stack/_stack.ts",
+    "src/my-stack/create-todo.ts",
+    "src/my-stack/delete-todo.ts",
+    "src/my-stack/list-todos.ts",
+    "src/my-stack/table.ts"
+  ]
 }
