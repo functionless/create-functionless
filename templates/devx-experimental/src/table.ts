@@ -1,4 +1,3 @@
-import { AttributeType, BillingMode } from "aws-cdk-lib/aws-dynamodb";
 import { Table } from "fl-exp";
 
 interface TableItem<T extends string> {
@@ -15,13 +14,12 @@ interface Todo extends TableItem<"todo"> {
 export const AppTable = Table<Todo, "pk", "sk">({
   partitionKey: {
     name: "pk",
-    type: AttributeType.STRING,
+    type: "S",
   },
   sortKey: {
     name: "sk",
-    type: AttributeType.STRING,
+    type: "S",
   },
-  billingMode: BillingMode.PAY_PER_REQUEST,
 });
 
 export default AppTable;
