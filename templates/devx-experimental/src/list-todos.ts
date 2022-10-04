@@ -1,11 +1,9 @@
 import { Function } from "fl-exp";
-import { $AWS } from "functionless";
 
 import { AppTable } from "./table";
 
-export default Function(async (event: {}) => {
-  const response = await $AWS.DynamoDB.Query({
-    Table: AppTable,
+export default LambdaFunction(async (event: {}) => {
+  const response = AppTable.query({
     KeyConditionExpression: "#pk = :pk",
     ExpressionAttributeNames: {
       "#pk": "pk",

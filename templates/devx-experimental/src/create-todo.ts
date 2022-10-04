@@ -1,13 +1,11 @@
-import { Function } from "fl-exp";
-import { $AWS } from "functionless";
+import { LambdaFunction } from "fl-exp";
 import * as uuid from "uuid";
 
 import { AppTable } from "./table";
 
-export default Function(async (event: { message: string }) => {
+export default LambdaFunction(async (event: { message: string }) => {
   const id = uuid.v4();
-  await $AWS.DynamoDB.PutItem({
-    Table: AppTable,
+  await AppTable.put({
     Item: {
       pk: {
         S: "todo",
